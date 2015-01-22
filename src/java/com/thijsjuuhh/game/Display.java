@@ -2,26 +2,51 @@ package com.thijsjuuhh.game;
 
 import java.awt.Canvas;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
-import com.thijsjuuhh.game.graphics.Screen;
+import com.thijsjuuhh.game.grapics.Screen;
 
 public class Display extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
 
-	public static final int WIDTH = 800;
-	public static final int HEIGHT = 600;
+	public static int width = 300;
+	public static int height = width / 16 * 9;
+	public static int scale = 3;
 	public static final String TITLE = "Game";
 
+	BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+	int[] pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
+
+	Screen screen;
 	Thread thread;
 	boolean running = false;
-	BufferStrategy bs;
-	Screen screen;
 
 	public Display() {
+		Dimension size = new Dimension(width * scale, height * scale);
+		setPreferredSize(size);
+		screen = new Screen(width, height);
+	}
+
+	public synchronized void start() {
+		if (running) return;
+
+		running = true;
 		thread = new Thread(this);
+		thread.start();
+	}
+
+	public synchronized void stop() {
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		running = false;
 	}
 
 	@Override
@@ -54,6 +79,22 @@ public class Display extends Canvas implements Runnable {
 	}
 
 	private void render() {
+		BufferStrategy bs = this.getBufferStrategy();
+		if (bs == null) {
+			createBufferStrategy(3);
+			return;
+		}
+		screen.clear();
+		screen.render(0, 0);
+
+		for (int i = 0; i < pixels.length; i++) {
+			pixels[i] = screen.pixels[i];
+		}
+
+		Graphics g = bs.getDrawGraphics();
+		g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
+		g.dispose();
+		bs.show();
 
 	}
 
@@ -61,26 +102,11 @@ public class Display extends Canvas implements Runnable {
 
 	}
 
-	public synchronized void start() {
-		thread.start();
-		running = true;
-	}
-
-	public synchronized void stop() {
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		running = false;
-	}
-
 	public static void main(String[] args) {
 		Display game = new Display();
 		JFrame frame = new JFrame();
 		frame.add(game);
 		frame.pack();
-		frame.setSize(new Dimension(WIDTH, HEIGHT));
 		frame.setTitle(TITLE);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
