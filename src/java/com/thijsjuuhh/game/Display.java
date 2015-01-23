@@ -10,6 +10,7 @@ import java.awt.image.DataBufferInt;
 import javax.swing.JFrame;
 
 import com.thijsjuuhh.game.grapics.Screen;
+import com.thijsjuuhh.input.Keyboard;
 
 public class Display extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
@@ -21,15 +22,24 @@ public class Display extends Canvas implements Runnable {
 
 	BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 	int[] pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
+	int xOffs = 0;
+	int yOffs = 0;
 
+	static JFrame frame;
 	Screen screen;
 	Thread thread;
 	boolean running = false;
+	Keyboard key;
 
 	public Display() {
 		Dimension size = new Dimension(width * scale, height * scale);
 		setPreferredSize(size);
 		screen = new Screen(width, height);
+
+		frame = new JFrame();
+
+		key = new Keyboard();
+		addKeyListener(key);
 	}
 
 	public synchronized void start() {
@@ -85,7 +95,7 @@ public class Display extends Canvas implements Runnable {
 			return;
 		}
 		screen.clear();
-		screen.render(0, 0);
+		screen.render(xOffs, yOffs);
 
 		for (int i = 0; i < pixels.length; i++) {
 			pixels[i] = screen.pixels[i];
@@ -99,12 +109,24 @@ public class Display extends Canvas implements Runnable {
 	}
 
 	private void update() {
-
+		key.update();
+		if (key.up) {
+			yOffs--;
+		}
+		if (key.down) {
+			yOffs++;
+		}
+		if (key.left) {
+			xOffs--;
+		}
+		if (key.right) {
+			xOffs++;
+		}
 	}
 
 	public static void main(String[] args) {
 		Display game = new Display();
-		JFrame frame = new JFrame();
+
 		frame.add(game);
 		frame.pack();
 		frame.setTitle(TITLE);
@@ -112,6 +134,8 @@ public class Display extends Canvas implements Runnable {
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+
+		frame.addKeyListener(new Keyboard());
 		game.start();
 	}
 }
