@@ -28,7 +28,6 @@ public class Screen {
 		}
 	}
 
-	// 16 the map
 	public void render(int xOffs, int yOffs) {
 		for (int y = 0; y < height; y++) {
 			if (y < 0 || y >= height) {
