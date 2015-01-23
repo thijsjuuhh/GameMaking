@@ -40,7 +40,7 @@ public class Screen {
 				int xPix = x + xOffs;
 				// if (xPix < 0 || xPix >= width) break;
 				int tileIndex = ((xPix >> 4) & MAP_SIZE_MASK) + ((yPix >> 4) & MAP_SIZE_MASK) * MAP_SIZE;
-				pixels[x + y * width] = tiles[tileIndex];
+				pixels[x + y * width] = Sprite.grass.pixels[(x & 15) + (y & 15) * Sprite.grass.SIZE];
 			}
 		}
 
