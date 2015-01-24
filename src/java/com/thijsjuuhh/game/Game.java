@@ -9,10 +9,13 @@ import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
+import com.thijsjuuhh.game.entity.mob.Player;
 import com.thijsjuuhh.game.grapics.Screen;
-import com.thijsjuuhh.input.Keyboard;
+import com.thijsjuuhh.game.input.Keyboard;
+import com.thijsjuuhh.game.level.Level;
+import com.thijsjuuhh.game.level.SpawnLevel;
 
-public class Display extends Canvas implements Runnable {
+public class Game extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
 
 	public static int width = 300;
@@ -20,26 +23,30 @@ public class Display extends Canvas implements Runnable {
 	public static int scale = 3;
 	public static final String TITLE = "Game";
 
+	private Level level;
+
 	BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 	int[] pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
-	int xOffs = 0;
-	int yOffs = 0;
 
 	static JFrame frame;
 	Screen screen;
 	Thread thread;
 	boolean running = false;
 	Keyboard key;
+	Player player;
 
-	public Display() {
+	public Game() {
 		Dimension size = new Dimension(width * scale, height * scale);
 		setPreferredSize(size);
+
 		screen = new Screen(width, height);
-
 		frame = new JFrame();
-
 		key = new Keyboard();
+		level = new SpawnLevel("/main/level/Level1.png");
+		player = new Player(key);
+
 		addKeyListener(key);
+
 	}
 
 	public synchronized void start() {
@@ -67,6 +74,7 @@ public class Display extends Canvas implements Runnable {
 		long timer = System.currentTimeMillis();
 		int frames = 0;
 		int updates = 0;
+		requestFocus();
 		while (running) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
@@ -80,12 +88,18 @@ public class Display extends Canvas implements Runnable {
 			frames++;
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
-				System.out.println(updates + "ups, " + frames + " fps");
+				frame.setTitle(TITLE + " | " + updates + " ups " + frames + " fps");
+				System.out.println(updates + " ups, " + frames + " fps");
 				updates = 0;
 				frames = 0;
 			}
 
 		}
+	}
+
+	private void update() {
+		key.update();
+		player.update();
 	}
 
 	private void render() {
@@ -94,12 +108,15 @@ public class Display extends Canvas implements Runnable {
 			createBufferStrategy(3);
 			return;
 		}
-		screen.clear();
-		screen.render(xOffs, yOffs);
 
-		for (int i = 0; i < pixels.length; i++) {
+		screen.clear();
+		int xScroll = player.x - screen.width / 2;
+		int yScroll = player.y - screen.height / 2;
+		level.render(xScroll, yScroll, screen);
+		player.render(screen);
+
+		for (int i = 0; i < pixels.length; i++)
 			pixels[i] = screen.pixels[i];
-		}
 
 		Graphics g = bs.getDrawGraphics();
 		g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
@@ -108,24 +125,8 @@ public class Display extends Canvas implements Runnable {
 
 	}
 
-	private void update() {
-		key.update();
-		if (key.up) {
-			yOffs--;
-		}
-		if (key.down) {
-			yOffs++;
-		}
-		if (key.left) {
-			xOffs--;
-		}
-		if (key.right) {
-			xOffs++;
-		}
-	}
-
 	public static void main(String[] args) {
-		Display game = new Display();
+		Game game = new Game();
 
 		frame.add(game);
 		frame.pack();
