@@ -128,10 +128,14 @@ public class Game extends Canvas implements Runnable {
 
 		Graphics g = bs.getDrawGraphics();
 		g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
-		if (Mouse.getButton() == 1) {
-			g.setColor(Color.WHITE);
-			g.fillRect(Mouse.getX(), Mouse.getY(), 64, 64);
-		}
+		g.setColor(Color.WHITE);
+		// g.fillRect(Mouse.getX(), Mouse.getY(), 64, 64);
+		// if (Mouse.getButton() != -1) {
+		// g.setColor(Color.WHITE);
+		// g.setFont(new Font("Verdana", 0, 50));
+		// g.drawString("Button: " + Mouse.getButton(), 60, 60);
+		// }
+
 		g.dispose();
 		bs.show();
 

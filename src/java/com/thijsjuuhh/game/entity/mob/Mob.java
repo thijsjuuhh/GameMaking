@@ -33,6 +33,10 @@ public abstract class Mob extends Entity {
 	public void render() {
 	}
 
+	protected void shoot(int x, int y, double dir) {
+		System.out.println(dir);
+	}
+
 	private boolean collision(int xa, int ya) {
 		boolean solid = false;
 		for (int c = 0; c < 4; c++) {

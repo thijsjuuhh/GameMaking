@@ -1,10 +1,13 @@
 package com.thijsjuuhh.game.entity.mob;
 
+import com.thijsjuuhh.game.Game;
 import com.thijsjuuhh.game.grapics.Screen;
 import com.thijsjuuhh.game.grapics.Sprite;
 import com.thijsjuuhh.game.input.Keyboard;
+import com.thijsjuuhh.game.input.Mouse;
 import com.thijsjuuhh.game.registry.Sprites;
 
+//68
 public class Player extends Mob {
 
 	private Keyboard input;
@@ -41,6 +44,17 @@ public class Player extends Mob {
 			walking = true;
 			move(xa, ya);
 		} else walking = false;
+
+		updateShooting();
+	}
+
+	private void updateShooting() {
+		if (Mouse.getButton() == 1) {
+			double dx = Mouse.getX() - Game.width / 2;
+			double dy = Mouse.getY() - Game.height / 2;
+			double dir = Math.atan2(dy, dx);
+			shoot(x, y, dir);
+		}
 	}
 
 	@Override
