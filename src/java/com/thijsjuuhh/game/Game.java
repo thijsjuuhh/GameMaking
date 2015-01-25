@@ -1,6 +1,7 @@
 package com.thijsjuuhh.game;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
@@ -12,8 +13,9 @@ import javax.swing.JFrame;
 import com.thijsjuuhh.game.entity.mob.Player;
 import com.thijsjuuhh.game.grapics.Screen;
 import com.thijsjuuhh.game.input.Keyboard;
+import com.thijsjuuhh.game.input.Mouse;
 import com.thijsjuuhh.game.level.Level;
-import com.thijsjuuhh.game.level.SpawnLevel;
+import com.thijsjuuhh.game.level.TileCoordinate;
 
 public class Game extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
@@ -42,11 +44,16 @@ public class Game extends Canvas implements Runnable {
 		screen = new Screen(width, height);
 		frame = new JFrame();
 		key = new Keyboard();
-		level = new SpawnLevel("/main/level/Level1.png");
-		player = new Player(key);
+		level = Level.spawn;
+		TileCoordinate ps = new TileCoordinate(19, 52);
+		player = new Player(ps.x(), ps.y(), key);
+		player.init(level);
+
+		Mouse mouse = new Mouse();
 
 		addKeyListener(key);
-
+		addMouseListener(mouse);
+		addMouseMotionListener(mouse);
 	}
 
 	public synchronized void start() {
@@ -112,6 +119,7 @@ public class Game extends Canvas implements Runnable {
 		screen.clear();
 		int xScroll = player.x - screen.width / 2;
 		int yScroll = player.y - screen.height / 2;
+
 		level.render(xScroll, yScroll, screen);
 		player.render(screen);
 
@@ -120,6 +128,10 @@ public class Game extends Canvas implements Runnable {
 
 		Graphics g = bs.getDrawGraphics();
 		g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
+		if (Mouse.getButton() == 1) {
+			g.setColor(Color.WHITE);
+			g.fillRect(Mouse.getX(), Mouse.getY(), 64, 64);
+		}
 		g.dispose();
 		bs.show();
 

@@ -3,6 +3,7 @@ package com.thijsjuuhh.game.entity.mob;
 import com.thijsjuuhh.game.grapics.Screen;
 import com.thijsjuuhh.game.grapics.Sprite;
 import com.thijsjuuhh.game.input.Keyboard;
+import com.thijsjuuhh.game.registry.Sprites;
 
 public class Player extends Mob {
 
@@ -13,14 +14,14 @@ public class Player extends Mob {
 
 	public Player(Keyboard input) {
 		this.input = input;
-		sprite = Sprite.player_up;
+		sprite = Sprites.player_up;
 	}
 
 	public Player(int x, int y, Keyboard input) {
 		this.x = x;
 		this.y = y;
 		this.input = input;
-		sprite = Sprite.player_up;
+		sprite = Sprites.player_up;
 
 	}
 
@@ -45,35 +46,35 @@ public class Player extends Mob {
 	@Override
 	public void render(Screen screen) {
 		if (dir == 0) {
-			sprite = Sprite.player_up;
+			sprite = Sprites.player_up;
 			if (walking) if (anim < 15)
-				sprite = Sprite.player_up_1;
+				sprite = Sprites.player_up_1;
 			else if (anim < 30)
-				sprite = Sprite.player_up_2;
+				sprite = Sprites.player_up_2;
 			else anim = 0;
 		}
 		if (dir == 1) {
-			sprite = Sprite.player_right;
+			sprite = Sprites.player_right;
 			if (walking) if (anim < 15)
-				sprite = Sprite.player_right_1;
+				sprite = Sprites.player_right_1;
 			else if (anim < 30)
-				sprite = Sprite.player_right_2;
+				sprite = Sprites.player_right_2;
 			else anim = 0;
 		}
 		if (dir == 2) {
-			sprite = Sprite.player_down;
+			sprite = Sprites.player_down;
 			if (walking) if (anim < 15)
-				sprite = Sprite.player_down_1;
+				sprite = Sprites.player_down_1;
 			else if (anim < 30)
-				sprite = Sprite.player_down_2;
+				sprite = Sprites.player_down_2;
 			else anim = 0;
 		}
 		if (dir == 3) {
-			sprite = Sprite.player_left;
+			sprite = Sprites.player_left;
 			if (walking) if (anim < 15)
-				sprite = Sprite.player_left_1;
+				sprite = Sprites.player_left_1;
 			else if (anim < 30)
-				sprite = Sprite.player_left_2;
+				sprite = Sprites.player_left_2;
 			else anim = 0;
 		}
 		screen.renderPlayer(x - 16, y - 16, this, sprite);
