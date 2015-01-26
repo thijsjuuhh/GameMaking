@@ -20,9 +20,10 @@ import com.thijsjuuhh.game.level.TileCoordinate;
 public class Game extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
 
-	public static int width = 300;
-	public static int height = width / 16 * 9;
-	public static int scale = 3;
+	private static int width = 300;
+	private static int height = width / 16 * 9;
+	private static int scale = 3;
+
 	public static final String TITLE = "Game";
 
 	private Level level;
@@ -107,6 +108,7 @@ public class Game extends Canvas implements Runnable {
 	private void update() {
 		key.update();
 		player.update();
+		level.update();
 	}
 
 	private void render() {
@@ -155,4 +157,13 @@ public class Game extends Canvas implements Runnable {
 		frame.addKeyListener(new Keyboard());
 		game.start();
 	}
+
+	public static int getWindowWidth() {
+		return width * scale;
+	}
+
+	public static int getWindowHeight() {
+		return height * scale;
+	}
+
 }

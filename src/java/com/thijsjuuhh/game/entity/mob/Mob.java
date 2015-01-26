@@ -1,6 +1,8 @@
 package com.thijsjuuhh.game.entity.mob;
 
 import com.thijsjuuhh.game.entity.Entity;
+import com.thijsjuuhh.game.entity.projectile.Projectile;
+import com.thijsjuuhh.game.entity.projectile.WizardProjectile;
 import com.thijsjuuhh.game.grapics.Sprite;
 
 public abstract class Mob extends Entity {
@@ -24,6 +26,7 @@ public abstract class Mob extends Entity {
 			x += xa;
 			y += ya;
 		}
+
 	}
 
 	@Override
@@ -34,7 +37,8 @@ public abstract class Mob extends Entity {
 	}
 
 	protected void shoot(int x, int y, double dir) {
-		System.out.println(dir);
+		Projectile p = new WizardProjectile(x, y, dir);
+		level.addProjectile(p);
 	}
 
 	private boolean collision(int xa, int ya) {
